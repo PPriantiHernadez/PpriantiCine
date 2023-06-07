@@ -1,0 +1,54 @@
+﻿@model ML.Pelicula
+@{
+    ViewData["Title"] = "Favoritas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1 style="text-align: center; color:rebeccapurple">Peliculas Favoritas  </h1>
+<div class="container">
+    <div class=row>
+        <div class="text-center">
+            <p>
+                En este modulo puedes visualizar a las peliculas favoritas y podras eliminar alguna pelicula de tu lista de favoritos
+            </p>
+        </div>
+    </div>
+
+</div>
+
+<div class="container-fluid">
+</div>
+
+<div class="row">
+    @foreach (ML.Pelicula peli in Model.Movies)
+    {
+        <div class="col mt-3 pt-3">
+
+            <div class="card " style="width: 18rem;">
+                <img class=" card-img-top">
+                <div class="center-block">
+
+                    <img src="@peli.path@peli.poster_path" class="card-img-top" style="height:350px;">
+
+                    <h5 style="text-align:center" class="card-title">Tittle: @peli.title</h5>
+                </div>
+
+                <div class="card-body">
+                    <ul class="list-group list-group-flush ">
+
+                        <li class="list-group-item">Overview:</li>
+
+                        <li class="list-group-item"> @peli.overview></li>
+
+                        <li class="list-group-item">Original_language: @peli.original_language</li>
+                        <a class="btn btn-danger " href="@Url.Action("Delete", "Pelicula", new { id= peli.id})" onclick="return confirm('Estas seguro que desea eliminar de favoritos este registro?');">Eliminar</a>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    }
+
+</div>
+

@@ -1,0 +1,143 @@
+﻿@model ML.Cine
+@{
+    ViewData["Title"] = "GetEstadisticas";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2>ESTADISTICAS</h2>
+        </div>
+    </div>
+
+    <style>
+        #map {
+            height: 300px;
+            width: 50%;
+            float: left;
+        }
+
+        #chartContainer {
+            height: 300px;
+            width: 50%;
+        }
+    </style>
+
+    <h1>Mapa y gráfica de cines</h1>
+    <div id="map"></div>
+    <div id="chartContainer"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSKBDdPPlfca_zTwyxKiicRQn1qfgRjLw&callback=initMap" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSKBDdPPlfca_zTwyxKiicRQn1qfgRjLw&callback=initMap&libraries=&v=weekly&sensor=false" defer></script>
+    <script src="https://maps.googleapis.com/maps/api/geocode/json?address=C/delaseras9-Iscar&key=AIzaSyCSKBDdPPlfca_zTwyxKiicRQn1qfgRjLw" defer></script>
+    
+
+    <script>
+
+        function initMap() {
+            // Crea un mapa centrado en la Ciudad de México
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 19.420402, lng: -99.157794 },
+                zoom: 15
+            });
+
+        @foreach (ML.Cine cine in Model.Cines)
+        {
+            <text>
+                    var contentString = '<div id="content">' +
+                    '<div id="siteNotice">' +
+                    '</div>' +
+                    'Nombre: ' + '@cine.Nombre' +
+                    '<div id="bodyContent">' +
+                    'Ventas:' + '@cine.Ventas' + "<br>" +
+                    'Zona:' + '@cine.Zona.Nombre' + "<br>" +
+                    'ID:' + '@cine.IdCine' + "<br>" +
+                    '</div>' +
+                    '</div>';
+
+                var marker_@cine.IdCine = new google.maps.Marker({ position: { lat: @cine.Latitud, lng: @cine.Longitud }, map: map });
+
+                (marker_@cine.IdCine).addListener("click", function () {
+                    (infoWindow_@cine.IdCine).open(map, marker_@cine.IdCine);
+            });
+            var infoWindow_@cine.IdCine = new google.maps.InfoWindow({
+                content: contentString,
+                ariaLabel: "Punto de los cines",
+            });
+            </text>
+        }
+
+
+
+        @*(infoWindow_@Model.ID).open(map);*@
+            // Configure the click listener.
+
+        @*'marker'+'@Model.ID'.addListener("click", function () {
+            infoWindow.open(map, marker);
+            });*@
+       
+        // Crea los marcadores de los cines
+        //    var cineMexMarker = new google.maps.Marker({
+        //        position: { lat: 19.419457, lng: -99.162314 },
+        //        map: map,
+        //        title: 'CineMex'
+        //    });
+
+        //    var cinePolisMarker = new google.maps.Marker({
+        //        position: { lat: 19.421445, lng: -99.166890 },
+        //        map: map,
+        //        title: 'CinePolis'
+        //    });
+
+        //    // Crea las ventanas de información de los marcadores
+        //    var cineMexInfoWindow = new google.maps.InfoWindow({
+        //        content: 'Nombre: CineMex<br>Dirección: Av Chapultepec 340, Roma Nte., Cuauhtémoc, 06700 Ciudad de México, CDMX, México<br>Zona: Sur<br>Ventas: 5000'
+        //    });
+
+        //    var cinePolisInfoWindow = new google.maps.InfoWindow({
+        //        content: 'Nombre: CinePolis<br>Dirección: Av. Chapultepec - Praga, Juárez, 06600 Ciudad de México, CDMX, México<br>Zona: Norte<br>Ventas: 3000'
+        //    });
+
+        //    // Asocia las ventanas de información a los marcadores
+        //    cineMexMarker.addListener('click', function () {
+        //        cineMexInfoWindow.open(map, cineMexMarker);
+        //    });
+
+        //    cinePolisMarker.addListener('click', function () {
+        //        cinePolisInfoWindow.open(map, cinePolisMarker);
+        //    });
+
+            // Crea la gráfica de pastel
+            $(function () {
+                var chart = new CanvasJS.Chart("chartContainer", {
+                    animationEnabled: true,
+                    title: {
+                        text: "Porcentaje de ventas"
+                    },
+                    subtitles: [{
+                        text: "Periodo 2023"
+                    }],
+                    data: [{
+                        type: "pie",
+                        startAngle: 240,
+                        yValueFormatString: "##0.00\"%\"",
+                        indexLabel: "{label} {y}",
+                        dataPoints: [
+                            @foreach (ML.Cine cine in Model.Cines)
+                            {
+                             <text>{ label: "@cine.Zona.Nombre", y: @cine.Ventas }, </text>
+
+                             }
+                        ]
+                    }]
+                });
+                chart.render();
+            });
+        }
+
+    </script>
+

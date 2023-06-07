@@ -1,0 +1,150 @@
+﻿@model ML.Cine
+@{
+    ViewData["Title"] = "Form";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Agregar Cine</h2>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("Form", "Cine", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="row">
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.IdCine, new { @class = "visually-hidden" })
+                @Html.TextBoxFor(model => model.IdCine, new { @class = "visually-hidden form-control" })
+                @Html.ValidationMessageFor(model => model.IdCine)
+            </div>
+
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.Nombre)
+                <div class="input-group">
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-film" style="color:mediumpurple"></i></span>
+                    @Html.TextBoxFor(model => model.Nombre, new { @class = "form-control", @id = "txtNombre", @placeholder="Nombre"})
+                    @Html.ValidationMessageFor(model => model.Nombre)
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.Direccion)
+                <div class="input-group">
+                    <span class="input-group-text" id="address" readonly disabled><i class="bi bi-geo-alt-fill" style="color:mediumpurple"></i></span>
+                    @Html.TextBoxFor(model => model.Direccion, new { @class = "form-control", @id="txtaddress", @placeholder="Dirección",@readonly="readonly"})
+                    @Html.ValidationMessageFor(model => model.Direccion)
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.Zona)
+                @Html.DropDownListFor(model => model.Zona.IdZona, new SelectList(Model.Zona.Zonas, "IdZona", "Nombre"), "Selecciona una opcion", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Zona.IdZona)
+            </div>
+
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.Ventas)
+                <div class="input-group">
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-coin" style="color:mediumpurple"></i></span>
+                    @Html.TextBoxFor(model => model.Ventas, new { @class = "form-control", @id = "txtVentas"})
+                    @Html.ValidationMessageFor(model => model.Ventas)
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Latitud, new { @class = "visually-hidden" })
+            @Html.TextBoxFor(model => model.Latitud, new { @class = "visually-hidden form-control", @id = "txtLatitud" })
+            @Html.ValidationMessageFor(model => model.Latitud)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Longitud, new { @class = "visually-hidden" })
+            @Html.TextBoxFor(model => model.Longitud, new { @class = "visually-hidden form-control", @id = "txtLongitud" })
+            @Html.ValidationMessageFor(model => model.Longitud)
+        </div>
+
+
+        <br>
+        <div id="map" style="height: 400px; width: 100%;"></div>
+
+
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <input type="submit" value="Guardar" class="btn btn-success" />
+                @Html.ActionLink("Regresar", "GetAll", "Cine", htmlAttributes: new { @class = "btn btn-danger" })
+            </div>
+        </div>
+
+    }
+</div>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSKBDdPPlfca_zTwyxKiicRQn1qfgRjLw&libraries=places"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+    // Función para inicializar el mapa y agregar un evento de clic en el mapa
+    function initializeMap() {
+        var mapOptions = {
+            center: new google.maps.LatLng(19.420402, -99.157794),
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+        google.maps.event.addListener(map, 'click', function (event) {
+            getAddress(event.latLng.lat(), event.latLng.lng());
+        });
+
+
+    }
+
+    // Función para obtener la dirección utilizando las coordenadas latitud y longitud
+    function getAddress(lat, lng) {
+        var geocoder = new google.maps.Geocoder();
+        var latLng = new google.maps.LatLng(lat, lng);
+
+        geocoder.geocode({ 'latLng': latLng }, function (results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                if (results[0]) {
+                    $('#txtaddress').val(results[0].formatted_address);
+                }
+            } else {
+                alert('No se pudo obtener la dirección. Por favor, intenta de nuevo.');
+            }
+        });
+
+        //obtener cordenadas
+        map.addListener("click", (mapsMouseEvent) => {
+            // Close the current InfoWindow.
+            infoWindow.close();
+            // Create a new InfoWindow.
+            infoWindow = new google.maps.InfoWindow({
+                position: mapsMouseEvent.latLng,
+            });
+            infoWindow.setContent(
+                JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
+            );
+
+            infoWindow.open(map);
+            var Latitud = mapsMouseEvent.latLng.lat();
+            var Longitud = mapsMouseEvent.latLng.lng();
+            $("#txtLatitud").val(Latitud);
+            $("#txtLongitud").val(Longitud);
+        });
+
+
+
+    }
+
+
+
+
+    // Inicializar el mapa cuando la página haya cargado
+    google.maps.event.addDomListener(window, 'load', initializeMap);
+</script>
