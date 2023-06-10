@@ -38,6 +38,11 @@ Contraseña VARBINARY(20) NOT NULL
 )
 GO
 
+ALTER TABLE Usuario ALTER COLUMN Contraseña VARBINARY(20)  
+GO 
+
+DROP TABLE Usuario
+
 ALTER TABLE cine
 ADD Latitud FLOAT NULL;
 
@@ -142,7 +147,7 @@ SELECT [IdZona]
   FROM [dbo].[Zona]
 GO
 --------------------------------------------AddUsuario
-CREATE PROCEDURE UsuarioAdd 
+ALTER PROCEDURE UsuarioAdd 'Pprianti','Priscila','Prianti','Hernandez','ppriantihernandez@gmail.com',12345
 @UserName varchar(50)
            ,@Nombre varchar(50)
            ,@ApellidoPaterno varchar(50)
@@ -165,4 +170,49 @@ INSERT INTO [dbo].[Usuario]
            ,@Correo
            ,@Contraseña)
 GO
+---------------------------------------------------UsuarioGetById
+CREATE PROCEDURE UsuarioGetById
+@IdUsuario int
+AS
+SELECT [IdUsuario]
+      ,[UserName]
+      ,[Nombre]
+      ,[ApellidoPaterno]
+      ,[ApellidoMaterno]
+      ,[Correo]
+      ,[Contraseña]
+  FROM [dbo].[Usuario]
+WHERE IdUsuario = @IdUsuario
+GO
 
+SELECT * FROM Usuario
+----------------------------------------------------Login
+ALTER PROCEDURE [dbo].[UsuarioGetByIdUserName] 
+@UserName varchar(50)
+AS
+SELECT [IdUsuario]
+      ,[UserName]
+      ,[Nombre]
+      ,[ApellidoPaterno]
+      ,[ApellidoMaterno]
+      ,[Correo]
+      ,[Contraseña]
+  FROM [dbo].[Usuario]
+WHERE Usuario.UserName = @UserName
+
+-------------------------------------------------
+
+CREATE PROCEDURE [dbo].[GetByEmail] 
+@Correo varchar(50)
+AS
+SELECT [IdUsuario]
+      ,[UserName]
+      ,[Nombre]
+      ,[ApellidoPaterno]
+      ,[ApellidoMaterno]
+      ,[Correo]
+      ,[Contraseña]
+  FROM [dbo].[Usuario]
+WHERE Usuario.Correo = @Correo
+
+---https://codepen.io/Rh2o/pen/yLgxJoG

@@ -1,0 +1,80 @@
+﻿@model ML.Usuario
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="stylesheet" href="/css/Login.css">
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+</head>
+<body>
+
+    <div class="control">
+
+        <h1>
+            Sign In
+        </h1>
+
+
+        @using (Html.BeginForm("Login", "User", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form" }))
+        {
+            <div class="control block-cube block-input">
+                <input id="correo" name="correo" type="text" placeholder="correo" />
+                <div class="bg-top">
+                    <div class="bg-inner"></div>
+                </div>
+                <div class="bg-right">
+                    <div class="bg-inner"></div>
+                </div>
+                <div class="bg">
+                    <div class="bg-inner"></div>
+                </div>
+            </div>
+
+            <div class="control block-cube block-input">
+                <input id="password" name="password" type="password" placeholder="password" />
+                <div class="bg-top">
+                    <div class="bg-inner"></div>
+                </div>
+                <div class="bg-right">
+                    <div class="bg-inner"></div>
+                </div>
+                <div class="bg">
+                    <div class="bg-inner"></div>
+                </div>
+            </div>
+
+            <button class="btn block-cube block-cube-hover" type="submit" value="Sign In">
+
+                <div class="bg-top">
+                    <div class="bg-inner"></div>
+                </div>
+
+                <div class="bg-right">
+                    <div class="bg-inner"></div>
+                </div>
+                <div class="bg">
+                    <div class="bg-inner"></div>
+                </div>
+
+                <div class="text">
+                    Log In
+                </div>
+            </button>
+            <a style="text-align: center;  display: flex; justify-content: center;" href="/Usuario/CambiarPassword">Olvide mi contraseña</a>
+        }
+    </div>
+    <div class="credits">
+        <a href="https://codepen.io/marko-zub/" target='_blank'>
+            My other codepens
+        </a>
+    </div>
+
+
+
+</body>
+</html>

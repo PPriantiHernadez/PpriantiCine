@@ -119,27 +119,6 @@
             }
         });
 
-        //obtener cordenadas
-        map.addListener("click", (mapsMouseEvent) => {
-            // Close the current InfoWindow.
-            infoWindow.close();
-            // Create a new InfoWindow.
-            infoWindow = new google.maps.InfoWindow({
-                position: mapsMouseEvent.latLng,
-            });
-            infoWindow.setContent(
-                JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
-            );
-
-            infoWindow.open(map);
-            var Latitud = mapsMouseEvent.latLng.lat();
-            var Longitud = mapsMouseEvent.latLng.lng();
-            $("#txtLatitud").val(Latitud);
-            $("#txtLongitud").val(Longitud);
-        });
-
-
-
     }
 
 

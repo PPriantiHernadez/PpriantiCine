@@ -17,6 +17,8 @@ public partial class PpriantiCineContext : DbContext
 
     public virtual DbSet<Cine> Cines { get; set; }
 
+    public virtual DbSet<Usuario> Usuarios { get; set; }
+
     public virtual DbSet<Zona> Zonas { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -39,6 +41,34 @@ public partial class PpriantiCineContext : DbContext
             entity.HasOne(d => d.IdZonaNavigation).WithMany(p => p.Cines)
                 .HasForeignKey(d => d.IdZona)
                 .HasConstraintName("FK__Cine__IdZona__1273C1CD");
+        });
+
+        modelBuilder.Entity<Usuario>(entity =>
+        {
+            entity.HasKey(e => e.IdUsuario).HasName("PK__Usuario__5B65BF979282B39D");
+
+            entity.ToTable("Usuario");
+
+            entity.HasIndex(e => e.Correo, "UQ__Usuario__60695A19E8174AC6").IsUnique();
+
+            entity.HasIndex(e => e.UserName, "UQ__Usuario__C9F284566AFC497C").IsUnique();
+
+            entity.Property(e => e.ApellidoMaterno)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ApellidoPaterno)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Contraseña).HasMaxLength(20);
+            entity.Property(e => e.Correo)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.UserName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<Zona>(entity =>
