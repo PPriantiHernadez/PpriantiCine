@@ -4,77 +4,43 @@
 }
 
 <!DOCTYPE html>
-
 <html>
 <head>
-    <link rel="stylesheet" href="/css/Login.css">
-    <meta name="viewport" content="width=device-width" />
-    <title>Login</title>
+    <title>Bienvenido</title>
+    <link rel="stylesheet" type="text/css" href="/css/StyleSheet.css">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="main">
+        <input type="checkbox" id="chk" aria-hidden="true">
 
-    <div class="control">
+        <div class="signup">
+            @using (Html.BeginForm("Login", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <label for="chk" aria-hidden="true">Registrarse</label>
+                <input type="text" name="UserName" placeholder="User name" required="">
+                <input type="text" name="Nombre" placeholder="Nombre" required="">
+                <input type="text" name="ApellidoPaterno" placeholder="Apellido Paterno" required="">         
+                <input type="email" name="Correo" placeholder="Email" required="">
+                <input type="password" name="password" placeholder="Password" required="">
+                <button type="submit">Registrarse</button>
+            }
+        </div>
+        <br>
+        <br>
 
-        <h1>
-            Sign In
-        </h1>
+        <div class="login">
+            @using (Html.BeginForm("Login", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <label for="chk" aria-hidden="true">Login</label>
+                <input type="email" name="Correo" placeholder="Email" required="">
+                <input type="password" name="password" placeholder="Password" required="">
+                <button type="submit">Login</button>
+                <a style="text-align: center;  display: flex; justify-content: center;" href="/User/CambiarPassword">Olvide mi contraseña</a>
+            }
 
-
-        @using (Html.BeginForm("Login", "User", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form" }))
-        {
-            <div class="control block-cube block-input">
-                <input id="correo" name="correo" type="text" placeholder="correo" />
-                <div class="bg-top">
-                    <div class="bg-inner"></div>
-                </div>
-                <div class="bg-right">
-                    <div class="bg-inner"></div>
-                </div>
-                <div class="bg">
-                    <div class="bg-inner"></div>
-                </div>
-            </div>
-
-            <div class="control block-cube block-input">
-                <input id="password" name="password" type="password" placeholder="password" />
-                <div class="bg-top">
-                    <div class="bg-inner"></div>
-                </div>
-                <div class="bg-right">
-                    <div class="bg-inner"></div>
-                </div>
-                <div class="bg">
-                    <div class="bg-inner"></div>
-                </div>
-            </div>
-
-            <button class="btn block-cube block-cube-hover" type="submit" value="Sign In">
-
-                <div class="bg-top">
-                    <div class="bg-inner"></div>
-                </div>
-
-                <div class="bg-right">
-                    <div class="bg-inner"></div>
-                </div>
-                <div class="bg">
-                    <div class="bg-inner"></div>
-                </div>
-
-                <div class="text">
-                    Log In
-                </div>
-            </button>
-            <a style="text-align: center;  display: flex; justify-content: center;" href="/Usuario/CambiarPassword">Olvide mi contraseña</a>
-        }
+        </div>
     </div>
-    <div class="credits">
-        <a href="https://codepen.io/marko-zub/" target='_blank'>
-            My other codepens
-        </a>
-    </div>
-
-
-
 </body>
+
 </html>

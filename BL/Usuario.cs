@@ -116,36 +116,34 @@ namespace BL
             return result;
         }
 
-        public static ML.Result GetByEmail(string Correo)
+        public static ML.Result GetByEmail(string correo)
         {
             ML.Result result = new ML.Result();
             try
             {
                 using (DL.PpriantiCineContext context = new DL.PpriantiCineContext())
                 {
-                    var obj = context.Usuarios.FromSqlRaw($"GetByEmail '{Correo}'").AsEnumerable().FirstOrDefault();
+                    var obj = context.Usuarios.FromSqlRaw($"GetByEmail '{correo}'").AsEnumerable().FirstOrDefault();
 
                     if (obj != null)
                     {
                         ML.Usuario usuario = new ML.Usuario();
                         usuario.IdUsuario = obj.IdUsuario;
                         usuario.Nombre = obj.Nombre;
-                        usuario.ApellidoPaterno = obj.ApellidoPaterno;
-                        usuario.ApellidoMaterno = obj.ApellidoMaterno;
                         usuario.UserName = obj.UserName;
+
                         usuario.Correo = obj.Correo;
                         usuario.Contraseña = obj.Contraseña;
 
-                        result.Object = usuario;
-                        result.Correct = true;
+                        result.Object = usuario; //boxing
 
+                        result.Correct = true;
                     }
                     else
                     {
                         result.Correct = false;
                         result.ErrorMessage = "No se pudo realizar la consulta";
                     }
-
                 }
             }
             catch (Exception ex)
