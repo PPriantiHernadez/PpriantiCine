@@ -1,11 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using System.Net.Mail;
 using System.Security.Cryptography;
+using System.Web;
 
 namespace PL.Controllers
 {
     public class UserController : Controller
     {
+        private IHostingEnvironment environment;
+        private IConfiguration configuration;
+        public UserController(IHostingEnvironment _environment, IConfiguration _configuration)
+        {
+            environment = _environment;
+            configuration = _configuration;
+        }
         public ActionResult Login()
         {
             ML.Usuario usuario = new ML.Usuario();
@@ -53,23 +62,41 @@ namespace PL.Controllers
 
             //validar que exista el email en la bd
 
-            string emailOrigen = "ppriantihernandez@gmail.com";
+            string emailOrigen = configuration["EmailOrigen"];
 
             MailMessage mailMessage = new MailMessage(emailOrigen, email, "Recuperar Contraseña", "<p>Correo para recuperar contraseña</p>");
             mailMessage.IsBodyHtml = true;
-            string contenidoHTML = System.IO.File.ReadAllText(@"C:\Users\digis\Downloads\Repositorio\PpriantiCine\PpriantiCine\PL\Views\Shared\Email.html");
+            string contenidoHTML = System.IO.File.ReadAllText(@configuration["Email"]);
             mailMessage.Body = contenidoHTML;
+            string url = configuration["NewPassword"] + HttpUtility.UrlEncode(email); //crea la variable de la direccion del metodo
+            mailMessage.Body = mailMessage.Body.Replace("{Url}",url); //remplaza la Url
             SmtpClient smtpClient = new SmtpClient("smtp.gmail.com");
             smtpClient.EnableSsl = true;
             smtpClient.UseDefaultCredentials = false;
             smtpClient.Port = 587;
-            smtpClient.Credentials = new System.Net.NetworkCredential(emailOrigen, "olkvhhrdqrzdjcfl");
+            smtpClient.Credentials = new System.Net.NetworkCredential(emailOrigen, configuration["Contrasenia"]);
 
             smtpClient.Send(mailMessage);
             smtpClient.Dispose();
 
             ViewBag.Modal = "show";
             ViewBag.Mensaje = "Se ha enviado un correo de confirmación a tu correo electronico";
+            return View("ModalLogin");
+        }
+
+
+        [HttpGet]
+        public ActionResult NewPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult NewPassword(string correo,string contraseña)
+        {
+
+            ML.Result result = BL.Usuario.CorreoUpdatePassword(correo,contraseña);
+
             return View();
         }
 

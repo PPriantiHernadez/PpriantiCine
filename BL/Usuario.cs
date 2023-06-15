@@ -37,6 +37,7 @@ namespace BL
 
         public static ML.Result GetById(int idUsuario)
         {
+
             ML.Result result = new ML.Result();
             try
             {
@@ -154,6 +155,57 @@ namespace BL
             }
             return result;
         }
+
+        public static ML.Result UpdatePassword(int IdUsuario, string contraseña)
+        {
+            ML.Result result = new ML.Result();
+
+            try
+            {
+                using (DL.PpriantiCineContext context = new DL.PpriantiCineContext())
+                {
+
+                    int queryEF = context.Database.ExecuteSqlRaw($"UsuarioUpdatePassword {IdUsuario}, '{contraseña}'");
+                    if (queryEF > 0)
+                    {
+                        result.Correct = true;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.ErrorMessage = "Ocurrio un error al actualizar la contraseña" + ex;
+            }
+            return result;
+        }
+
+        public static ML.Result CorreoUpdatePassword(string correo, string contraseña)
+        {
+            ML.Result result = new ML.Result();
+
+            try
+            {
+                using (DL.PpriantiCineContext context = new DL.PpriantiCineContext())
+                {
+
+                    int queryEF = context.Database.ExecuteSqlRaw($"EmailUpdatePassword {correo}, '{contraseña}'");
+                    if (queryEF > 0)
+                    {
+                        result.Correct = true;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Correct = false;
+                result.ErrorMessage = "Ocurrio un error al actualizar la contraseña" + ex;
+            }
+            return result;
+        }
+
 
     }
 }
