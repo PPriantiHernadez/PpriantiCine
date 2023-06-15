@@ -181,7 +181,7 @@ namespace BL
             return result;
         }
 
-        public static ML.Result CorreoUpdatePassword(string correo, string contraseña)
+        public static ML.Result Update(ML.Usuario usuario)
         {
             ML.Result result = new ML.Result();
 
@@ -190,7 +190,7 @@ namespace BL
                 using (DL.PpriantiCineContext context = new DL.PpriantiCineContext())
                 {
 
-                    int queryEF = context.Database.ExecuteSqlRaw($"EmailUpdatePassword {correo}, '{contraseña}'");
+                    int queryEF = context.Database.ExecuteSqlRaw($"EmailUpdatePassword  '{usuario.Correo}',  @Contraseña",new SqlParameter("@Contraseña", usuario.Contraseña));
                     if (queryEF > 0)
                     {
                         result.Correct = true;

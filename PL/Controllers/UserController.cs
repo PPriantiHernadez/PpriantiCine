@@ -86,18 +86,37 @@ namespace PL.Controllers
 
 
         [HttpGet]
-        public ActionResult NewPassword()
+        public ActionResult NewPassword(string email)
         {
-            return View();
+            ML.Usuario usuario = new ML.Usuario();
+            usuario.Correo = email;
+
+            return View(usuario);
         }
 
         [HttpPost]
-        public ActionResult NewPassword(string correo,string contraseña)
+        public ActionResult NewPassword(ML.Usuario usuario, string password)
         {
 
-            ML.Result result = BL.Usuario.CorreoUpdatePassword(correo,contraseña);
+            var bcrypt = new Rfc2898DeriveBytes(password, new byte[0], 10000, HashAlgorithmName.SHA256);
 
-            return View();
+            var passwordHash = bcrypt.GetBytes(20);
+            usuario.Contraseña = passwordHash;
+
+            ML.Result result = BL.Usuario.Update(usuario);
+
+            if (result.Correct)
+            {
+                ViewBag.Modal = "show";
+                ViewBag.Message = "Se ha actualizado correctamente";
+                return RedirectToAction("Login", "Usuario");
+            }
+            else
+            {
+                ViewBag.Modal = "show";
+                ViewBag.Mensaje = "Error al actualizar la contraseña";
+                return View();
+            }
         }
 
     }
