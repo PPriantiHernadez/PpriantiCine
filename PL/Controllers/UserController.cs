@@ -10,11 +10,15 @@ namespace PL.Controllers
     {
         private IHostingEnvironment environment;
         private IConfiguration configuration;
-        public UserController(IHostingEnvironment _environment, IConfiguration _configuration)
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        public UserController(IHostingEnvironment _environment, IConfiguration _configuration, IWebHostEnvironment hostingEnvironment)
         {
             environment = _environment;
             configuration = _configuration;
+            _hostingEnvironment = hostingEnvironment;
         }
+
+       
         public ActionResult Login()
         {
             ML.Usuario usuario = new ML.Usuario();
@@ -66,9 +70,19 @@ namespace PL.Controllers
 
             MailMessage mailMessage = new MailMessage(emailOrigen, email, "Recuperar Contraseña", "<p>Correo para recuperar contraseña</p>");
             mailMessage.IsBodyHtml = true;
-            string contenidoHTML = System.IO.File.ReadAllText(@configuration["Email"]);
+
+            //string contenidoHTML = System.IO.File.ReadAllText(@configuration["Email"]);
+
+            string contenidoHTML = System.IO.File.ReadAllText(Path.Combine(_hostingEnvironment.ContentRootPath, "wwwroot", "Template", "Email.html"));
+
             mailMessage.Body = contenidoHTML;
-            string url = configuration["NewPassword"] + HttpUtility.UrlEncode(email); //crea la variable de la direccion del metodo
+
+            //string url = configuration["NewPassword"] + HttpUtility.UrlEncode(email); //crea la variable de la direccion del metodo
+
+            //string url = "http://192.168.0.111/User/NewPassword" + HttpUtility.UrlEncode(email);
+            string url = configuration["NewPassword2"] + HttpUtility.UrlEncode(email);
+
+
             mailMessage.Body = mailMessage.Body.Replace("{Url}",url); //remplaza la Url
             SmtpClient smtpClient = new SmtpClient("smtp.gmail.com");
             smtpClient.EnableSsl = true;
